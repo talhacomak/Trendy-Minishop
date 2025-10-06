@@ -20,4 +20,18 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "MiniShop"
-include(":app")
+include(
+    ":app",
+    ":core:common",
+    ":core:ui",
+    ":core:network",
+    ":core:database",
+    ":core:config",
+    ":domain",
+    ":data:product",
+    ":data:local",
+    ":feature:home",
+    ":feature:favorites",
+    ":feature:cart",
+    ":feature:profile"
+)
