@@ -1,4 +1,3 @@
-// path: data/local/src/main/java/com/trendy/data/local/repo/FavoriteRepositoryImpl.kt
 package com.trendy.data.local.repo
 
 import com.trendy.core.database.dao.FavoriteDao

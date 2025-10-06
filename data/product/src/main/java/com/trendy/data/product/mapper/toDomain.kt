@@ -1,9 +1,7 @@
-// path: data/product/src/main/java/com/trendy/data/product/mapper/ProductMapper.kt
 package com.trendy.data.product.mapper
 
 import com.trendy.data.product.remote.dto.ProductDto
 import com.trendy.domain.model.Product
-import com.trendy.product.remote.dto.ProductDto
 
 fun ProductDto.toDomain(): Product =
     Product(

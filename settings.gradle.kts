@@ -26,7 +26,6 @@ include(
     ":core:ui",
     ":core:network",
     ":core:database",
-    ":core:config",
     ":domain",
     ":data:product",
     ":data:local",

@@ -1,6 +1,7 @@
 // path: feature/home/src/main/java/com/trendy/feature/home/HomeViewModel.kt
 package com.trendy.feature.home
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.trendy.domain.usecase.AddToCartUseCase
@@ -24,7 +25,7 @@ class HomeViewModel @Inject constructor(
     private val addToCart: AddToCartUseCase
 ) : ViewModel() {
 
-    var state = androidx.compose.runtime.mutableStateOf(HomeUiState())
+    var homeUiState = mutableStateOf(HomeUiState())
         private set
 
     private var loadJob: Job? = null
@@ -38,29 +39,29 @@ class HomeViewModel @Inject constructor(
     fun refresh() {
         loadJob?.cancel()
         loadJob = viewModelScope.launch {
-            state.value = state.value.copy(loading = true, error = null)
+            homeUiState.value = homeUiState.value.copy(loading = true, error = null)
             try {
                 val categories = buildList {
                     add("All")
                     addAll(getCategories().map { it.name })
                 }.distinct()
-                val cat = state.value.selectedCategory.takeIf { it in categories } ?: "All"
+                val cat = homeUiState.value.selectedCategory.takeIf { it in categories } ?: "All"
                 val products = getProducts(cat.takeIf { it != "All" })
-                state.value = state.value.copy(
+                homeUiState.value = homeUiState.value.copy(
                     loading = false,
                     categories = categories,
                     selectedCategory = cat,
                     products = products
                 )
             } catch (t: Throwable) {
-                state.value = state.value.copy(loading = false, error = t)
+                homeUiState.value = homeUiState.value.copy(loading = false, error = t)
             }
         }
     }
 
     fun selectCategory(category: String) {
-        if (category == state.value.selectedCategory) return
-        state.value = state.value.copy(selectedCategory = category)
+        if (category == homeUiState.value.selectedCategory) return
+        homeUiState.value = homeUiState.value.copy(selectedCategory = category)
         refresh()
     }
 
@@ -77,7 +78,7 @@ class HomeViewModel @Inject constructor(
         favsJob?.cancel()
         favsJob = viewModelScope.launch {
             observeFavorites()
-                .onEach { ids -> state.value = state.value.copy(favoriteIds = ids) }
+                .onEach { ids -> homeUiState.value = homeUiState.value.copy(favoriteIds = ids) }
                 .catch { /* favoriler akışı UI’ı düşürmesin */ }
                 .collect { /* no-op */ }
         }

@@ -1,4 +1,3 @@
-// path: data/local/src/main/java/com/trendy/data/local/repo/CartRepositoryImpl.kt
 package com.trendy.data.local.repo
 
 import com.trendy.core.database.dao.CartDao
@@ -16,10 +15,16 @@ class CartRepositoryImpl @Inject constructor(
 ) : CartRepository {
 
     override fun observeCart(): Flow<List<CartItem>> =
-        cartDao.observeCart().map { list -> list.map { CartItem(productId = it.productId, quantity = it.quantity) } }
+        cartDao.observeCart().map { list ->
+            list.map { CartItem(productId = it.productId, quantity = it.quantity) }
+        }
 
     override suspend fun setQuantity(productId: Int, quantity: Int) {
-        cartDao.upsert(CartItemEntity(productId = productId, quantity = quantity))
+        if (quantity <= 0) {
+            cartDao.remove(productId)
+        } else {
+            cartDao.upsert(CartItemEntity(productId = productId, quantity = quantity))
+        }
     }
 
     override suspend fun remove(productId: Int) {
@@ -27,8 +32,6 @@ class CartRepositoryImpl @Inject constructor(
     }
 
     override suspend fun clear() {
-        // Basit yaklaşım: tüm öğeleri çekip tek tek sil
-        val current = cartDao.observeCart().map { it.map { e -> e.productId } }.firstOrNull().orEmpty()
-        current.forEach { id -> cartDao.remove(id) }
+        cartDao.clearAll()
     }
 }

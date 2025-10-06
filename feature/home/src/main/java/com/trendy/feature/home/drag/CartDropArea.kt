@@ -1,84 +1,103 @@
-// path: feature/home/src/main/java/com/trendy/feature/home/drag/CartDropArea.kt
 package com.trendy.feature.home.drag
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.foundation.layout.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.IntRect
+import androidx.compose.ui.layout.positionInRoot
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.toSize
+import androidx.compose.ui.zIndex
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.center
+import androidx.compose.ui.unit.toOffset
+import com.trendy.feature.home.R
 
-/**
- * Alttan kayan sepet drop alanı. Layout sınırlarını CartDropController'a bildirir ve
- * pointer hareketinde controller.update(...) ile "isOver" bilgisini canlı tutar.
- */
 @Composable
 fun CartDropArea(
     visible: Boolean,
-    currentPointer: Offset,
+    currentPointerInRoot: Offset,
     controller: CartDropController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    targetSize: Dp = 240.dp
 ) {
-    val density = LocalDensity.current
+    val animatedSize by animateDpAsState(
+        targetValue = if (visible) targetSize else 0.dp,
+        animationSpec = spring(
+            dampingRatio = 0.85f,
+            stiffness = Spring.StiffnessMedium
+        ),
+        label = "cartSize"
+    )
+    val scale by animateFloatAsState(
+        targetValue = if (visible) 1f else 0.7f,
+        animationSpec = spring(
+            dampingRatio = 0.9f,
+            stiffness = Spring.StiffnessLow
+        ),
+        label = "cartScale"
+    )
+    val alpha by animateFloatAsState(
+        targetValue = if (visible) 1f else 0f,
+        animationSpec = spring(
+            dampingRatio = 0.9f,
+            stiffness = Spring.StiffnessLow
+        ),
+        label = "cartAlpha"
+    )
 
-    // Pointer değiştikçe "üzerinde mi" güncelle
-    LaunchedEffect(currentPointer, visible) {
-        if (visible) controller.update(currentPointer) else controller.reset()
+    Box(
+        modifier = modifier
+            .size(animatedSize)
+            .zIndex(10f)
+            .graphicsLayer {
+                this.alpha = alpha
+                scaleX = scale
+                scaleY = scale
+            }
+            .onGloballyPositioned { coords ->
+                controller.setTargetRect(
+                    topLeft = coords.positionInRoot(),
+                    size = coords.size.toSize()
+                )
+            },
+        contentAlignment = Alignment.Center
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.cart),
+            contentDescription = "Sepet alanı"
+        )
     }
 
-    AnimatedVisibility(
-        visible = visible,
-        enter = slideInVertically { it } + fadeIn(),
-        exit = slideOutVertically { it } + fadeOut()
-    ) {
-        Surface(
-            tonalElevation = if (controller.isOver.value) 8.dp else 2.dp,
-            modifier = modifier
-                .fillMaxWidth()
-                .onGloballyPositioned { coords ->
-                    val pos = coords.positionInWindow()
-                    val size = coords.size
-                    controller.onLayout(
-                        IntRect(
-                            pos.x.toInt(),
-                            pos.y.toInt(),
-                            pos.x.toInt() + size.width,
-                            pos.y.toInt() + size.height
-                        )
-                    )
-                }
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 14.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(Icons.Filled.ShoppingCart, contentDescription = null)
-                Spacer(Modifier.padding(4.dp))
-                Text(
-                    if (controller.isOver.value) "Bırak ekleyelim!" else "Sepete sürükleyin",
-                    style = MaterialTheme.typography.titleMedium
-                )
-            }
-        }
+    LaunchedEffect(visible, currentPointerInRoot) {
+        if (visible) controller.update(currentPointerInRoot) else controller.reset()
+    }
+}
+
+
+@Preview
+@Composable
+fun CartDropAreaPreview() {
+    var pointer by remember { mutableStateOf(Offset.Zero) }
+    val ctrl = rememberCartDropController()
+    Box(Modifier.fillMaxSize().padding(16.dp)) {
+        CartDropArea(
+            visible = true,
+            currentPointerInRoot = pointer,
+            controller = ctrl
+        )
+        Box(Modifier.fillMaxSize().onGloballyPositioned { coords ->
+            pointer = coords.size.center.toOffset()
+        })
     }
 }
