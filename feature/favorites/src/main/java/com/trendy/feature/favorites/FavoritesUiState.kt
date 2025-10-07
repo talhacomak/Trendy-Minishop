@@ -1,4 +1,3 @@
-// path: feature/favorites/src/main/java/com/trendy/feature/favorites/FavoritesUiState.kt
 package com.trendy.feature.favorites
 
 import com.trendy.domain.model.Product

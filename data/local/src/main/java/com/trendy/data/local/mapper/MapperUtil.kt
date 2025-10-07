@@ -1,4 +1,3 @@
-// path: data/local/src/main/java/com/trendy/data/local/mapper/CartMappers.kt
 package com.trendy.data.local.mapper
 
 import com.trendy.core.database.entities.CartItemEntity

@@ -1,4 +1,3 @@
-// path: feature/favorites/src/main/java/com/trendy/feature/favorites/FavoritesViewModel.kt
 package com.trendy.feature.favorites
 
 import androidx.lifecycle.ViewModel
@@ -32,7 +31,7 @@ class FavoritesViewModel @Inject constructor(
         loadJob?.cancel()
         loadJob = viewModelScope.launch {
             combine(
-                // Tüm ürünleri bir defa çek (FakeStore küçük, basit yol)
+                // due to FakeStoreApi is small, we can fetch all products once
                 kotlinx.coroutines.flow.flow { emit(getProducts(null)) },
                 observeFavorites()
             ) { allProducts, favIds ->

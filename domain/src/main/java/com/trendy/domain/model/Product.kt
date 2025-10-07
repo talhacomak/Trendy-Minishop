@@ -1,4 +1,3 @@
-// path: domain/src/main/java/com/trendy/domain/model/Product.kt
 package com.trendy.domain.model
 
 data class Product(

@@ -1,4 +1,3 @@
-// path: feature/cart/src/main/java/com/trendy/feature/cart/CartUiState.kt
 package com.trendy.feature.cart
 
 import com.trendy.domain.model.Product

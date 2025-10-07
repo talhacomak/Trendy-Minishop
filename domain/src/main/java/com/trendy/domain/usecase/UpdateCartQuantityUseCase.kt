@@ -1,4 +1,3 @@
-// path: domain/src/main/java/com/trendy/domain/usecase/UpdateCartQuantityUseCase.kt
 package com.trendy.domain.usecase
 
 import com.trendy.domain.repository.CartRepository

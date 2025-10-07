@@ -1,4 +1,3 @@
-// path: data/local/src/main/java/com/trendy/data/local/di/LocalDataModule.kt
 package com.trendy.data.local.di
 
 import com.trendy.data.local.repo.CartRepositoryImpl

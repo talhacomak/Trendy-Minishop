@@ -1,4 +1,3 @@
-// path: app/src/main/java/com/trendy/minishop/App.kt
 package com.trendy.minishop
 
 import android.app.Application

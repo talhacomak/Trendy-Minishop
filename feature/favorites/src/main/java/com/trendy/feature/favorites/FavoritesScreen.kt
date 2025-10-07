@@ -1,4 +1,3 @@
-// path: feature/favorites/src/main/java/com/trendy/feature/favorites/FavoritesScreen.kt
 package com.trendy.feature.favorites
 
 import androidx.compose.foundation.layout.Box

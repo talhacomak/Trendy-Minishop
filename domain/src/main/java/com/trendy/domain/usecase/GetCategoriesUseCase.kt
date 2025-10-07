@@ -1,4 +1,3 @@
-// path: domain/src/main/java/com/trendy/domain/usecase/GetCategoriesUseCase.kt
 package com.trendy.domain.usecase
 
 import com.trendy.domain.model.Category

@@ -13,7 +13,8 @@ import androidx.navigation.NavDestination
 fun BottomBar(
   currentDestination: NavDestination?,
   onNavigate: (String) -> Unit,
-  cartItemCount: Int
+  cartItemCount: Int = 0,
+  favoriteCount: Int = 0
 ) {
   NavigationBar {
     Destinations.tabs.forEach { item ->
@@ -27,7 +28,13 @@ fun BottomBar(
             BadgedBox(badge = { Badge { Text(cartItemCount.toString()) } }) {
               Icon(item.icon, contentDescription = item.label)
             }
-          } else {
+          }
+          else if (item.route == "favorites" && favoriteCount > 0) {
+            BadgedBox(badge = { Badge { Text(favoriteCount.toString()) } }) {
+              Icon(item.icon, contentDescription = item.label)
+            }
+          }
+          else {
             Icon(item.icon, contentDescription = item.label)
           }
         },

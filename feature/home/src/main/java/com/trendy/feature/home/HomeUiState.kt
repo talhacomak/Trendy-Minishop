@@ -1,4 +1,3 @@
-// path: feature/home/src/main/java/com/trendy/feature/home/HomeUiState.kt
 package com.trendy.feature.home
 
 import com.trendy.domain.model.Product

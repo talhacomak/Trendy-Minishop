@@ -1,4 +1,3 @@
-// path: domain/src/main/java/com/trendy/domain/repository/FavoriteRepository.kt
 package com.trendy.domain.repository
 
 import kotlinx.coroutines.flow.Flow

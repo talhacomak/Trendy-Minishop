@@ -6,12 +6,14 @@ import androidx.compose.animation.core.spring
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
@@ -25,6 +27,8 @@ import androidx.compose.ui.zIndex
 import com.trendy.domain.model.Product
 import com.trendy.feature.home.drag.CartDropController
 import com.trendy.feature.home.drag.DragAndDropState
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlin.math.abs
@@ -39,7 +43,7 @@ fun DraggableProductCard(
     isDropping: Boolean = false,
     minScaleAtTarget: Float = 0.88f,
     shouldReturnToOrigin: Boolean = true,
-    // ✅ Animasyon BITTİKTEN sonra, kart sepet merkezine emilip küçüldüğünde çağrılır
+    // Animasyon BITTİKTEN sonra, kart sepet merkezine emilip küçüldüğünde çağrılır
     onDropAccepted: (Product) -> Unit = {},
     content: @Composable () -> Unit
 ) {
@@ -53,6 +57,13 @@ fun DraggableProductCard(
     val animY = remember { Animatable(0f) }
     val scaleAnim = remember { Animatable(1f) }
     val selectedScale = 1.5f
+
+    var isAnimating by remember { mutableStateOf(false) }
+    LaunchedEffect(animX, animY, scaleAnim) {
+        snapshotFlow { animX.isRunning || animY.isRunning || scaleAnim.isRunning }
+            .distinctUntilChanged()
+            .collectLatest { running -> isAnimating = running }
+    }
 
     // Kart ölçüsü ve root içindeki topLeft
     var cardPosInRoot by remember { mutableStateOf(Offset.Zero) }
@@ -78,7 +89,7 @@ fun DraggableProductCard(
                 cardPosInRoot = coords.positionInRoot()
                 cardSize = coords.size.toSize()
             }
-            .zIndex(if (isDragging) 1f else 0f)
+            .zIndex(if (isDragging || isAnimating) 1f else 0f)
             .graphicsLayer {
                 translationX = currentTx()
                 translationY = currentTy()

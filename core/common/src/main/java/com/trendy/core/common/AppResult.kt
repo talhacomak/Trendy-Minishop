@@ -1,4 +1,3 @@
-// path: core/common/src/main/java/com/trendy/core/common/AppResult.kt
 package com.trendy.core.common
 
 sealed interface AppResult<out T> {

@@ -23,6 +23,7 @@ fun RootNav(
 ) {
   val navController = rememberNavController()
   val cartCount by mainVM.cartItemCountState.collectAsState()
+  val favoriteCount by mainVM.favoriteCountState.collectAsState()
 
   Scaffold(
     bottomBar = {
@@ -35,7 +36,8 @@ fun RootNav(
             restoreState = true
           }
         },
-        cartCount
+        cartCount,
+        favoriteCount
       )
     }
   ) { padding ->

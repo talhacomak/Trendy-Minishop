@@ -1,4 +1,3 @@
-// path: domain/src/main/java/com/trendy/domain/repository/CartRepository.kt
 package com.trendy.domain.repository
 
 import com.trendy.domain.model.CartItem
