@@ -83,7 +83,6 @@ dependencies {
 
     testImplementation(libs.truth)
     testImplementation(libs.mockito.core)
-    testImplementation(libs.mockito.inline)
     testImplementation(libs.mockito.kotlin)
     testImplementation(libs.coroutines.test)
     testImplementation(libs.turbine)
