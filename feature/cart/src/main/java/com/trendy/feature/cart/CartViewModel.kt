@@ -1,6 +1,6 @@
-// path: feature/cart/src/main/java/com/trendy/feature/cart/CartViewModel.kt
 package com.trendy.feature.cart
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.trendy.domain.model.Product
@@ -12,6 +12,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -24,7 +25,7 @@ class CartViewModel @Inject constructor(
     private val removeFromCart: RemoveFromCartUseCase
 ) : ViewModel() {
 
-    var state = androidx.compose.runtime.mutableStateOf(CartUiState())
+    var cartUiState = mutableStateOf(CartUiState())
         private set
 
     private var job: Job? = null
@@ -36,10 +37,10 @@ class CartViewModel @Inject constructor(
     private fun observeUi() {
         job?.cancel()
         job = viewModelScope.launch {
-            // Not: FakeStore küçük olduğundan tüm ürünleri bir defa çekmek pratik bir çözümdür.
+            // Note: Since FakeStore is small, fetching all products at once is a practical solution.
             combine(
                 observeCart(),                                   // Flow<List<CartItem>>
-                kotlinx.coroutines.flow.flow { emit(getProducts(null)) } // List<Product>
+                flow { emit(getProducts(null)) } // List<Product>
             ) { cartItems, allProducts ->
                 val items = cartItems.mapNotNull { ci ->
                     val p: Product? = allProducts.find { it.id == ci.productId }
@@ -48,21 +49,21 @@ class CartViewModel @Inject constructor(
                 val total = items.sumOf { it.product.price * it.quantity }
                 items to total
             }
-                .onStart { state.value = state.value.copy(loading = true, error = null) }
-                .catch { t -> state.value = state.value.copy(loading = false, error = t) }
+                .onStart { cartUiState.value = cartUiState.value.copy(loading = true, error = null) }
+                .catch { t -> cartUiState.value = cartUiState.value.copy(loading = false, error = t) }
                 .collect { (items, total) ->
-                    state.value = state.value.copy(loading = false, items = items, total = total, error = null)
+                    cartUiState.value = cartUiState.value.copy(loading = false, items = items, total = total, error = null)
                 }
         }
     }
 
     fun inc(productId: Int) {
-        val current = state.value.items.find { it.product.id == productId }?.quantity ?: 0
+        val current = cartUiState.value.items.find { it.product.id == productId }?.quantity ?: 0
         viewModelScope.launch { updateQty(productId, current + 1) }
     }
 
     fun dec(productId: Int) {
-        val current = state.value.items.find { it.product.id == productId }?.quantity ?: 0
+        val current = cartUiState.value.items.find { it.product.id == productId }?.quantity ?: 0
         val next = current - 1
         viewModelScope.launch {
             if (next <= 0) removeFromCart(productId) else updateQty(productId, next)

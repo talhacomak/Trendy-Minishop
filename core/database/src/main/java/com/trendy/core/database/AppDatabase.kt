@@ -1,4 +1,3 @@
-// path: core/database/src/main/java/com/trendy/core/database/AppDatabase.kt
 package com.trendy.core.database
 
 import androidx.room.Database

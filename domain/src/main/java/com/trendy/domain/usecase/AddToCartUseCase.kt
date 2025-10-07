@@ -1,4 +1,3 @@
-// path: domain/src/main/java/com/trendy/domain/usecase/AddToCartUseCase.kt
 package com.trendy.domain.usecase
 
 import com.trendy.domain.repository.CartRepository
@@ -8,8 +7,8 @@ class AddToCartUseCase @Inject constructor(
     private val repo: CartRepository
 ) {
     /**
-     * delta: eklenecek miktar (+/-)
-     * currentQty: UI tarafında bilinen mevcut miktar (bilmiyorsan 0 ver)
+     * delta: to add quantity (+/-)
+     * currentQty: known quantity at UI side (put 0 if you don't know)
      */
     suspend operator fun invoke(productId: Int, delta: Int = 1, currentQty: Int = 0) {
         val next = currentQty + delta

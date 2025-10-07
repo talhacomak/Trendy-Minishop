@@ -1,4 +1,3 @@
-// path: core/database/src/main/java/com/trendy/core/database/dao/FavoriteDao.kt
 package com.trendy.core.database.dao
 
 import androidx.room.Dao

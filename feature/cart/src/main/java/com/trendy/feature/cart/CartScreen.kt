@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -18,6 +20,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -29,51 +32,66 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import com.trendy.domain.model.Product
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CartScreen(
-    vm: CartViewModel = hiltViewModel()
+    vm: CartViewModel = androidx.hilt.navigation.compose.hiltViewModel() // DİKKAT: doğru import
 ) {
-    val s by vm.state
+    val uiState by vm.cartUiState
+    CartScreenContent(
+        cartUiState = uiState,
+        onIncreaseQuantity = { productId -> vm.inc(productId) },
+        onDecreaseQuantity = { productId -> vm.dec(productId) },
+        onRemoveItem = { productId -> vm.remove(productId) }
+    )
+}
 
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun CartScreenContent(
+    cartUiState: CartUiState,
+    onIncreaseQuantity: (Int) -> Unit,
+    onDecreaseQuantity: (Int) -> Unit,
+    onRemoveItem: (Int) -> Unit
+) {
     Column(Modifier.fillMaxSize()) {
         TopAppBar(title = { Text("Sepet") })
 
         when {
-            s.loading -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                androidx.compose.material3.CircularProgressIndicator()
+            cartUiState.loading -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
             }
-            s.error != null -> ErrorState(message = s.error?.message ?: "Bir hata oluştu")
-            s.items.isEmpty() -> EmptyState()
+            cartUiState.error != null -> ErrorState(message = cartUiState.error.message ?: "Bir hata oluştu")
+            cartUiState.items.isEmpty() -> EmptyState()
             else -> {
                 LazyColumn(
                     modifier = Modifier.weight(1f),
                     contentPadding = PaddingValues(8.dp)
                 ) {
-                    items(s.items) { item ->
+                    items(cartUiState.items) { item ->
                         CartRow(
                             title = item.product.title,
                             price = item.product.price,
                             image = item.product.image,
                             qty = item.quantity,
-                            onInc = { vm.inc(item.product.id) },
-                            onDec = { vm.dec(item.product.id) },
-                            onRemove = { vm.remove(item.product.id) }
+                            onInc = { onIncreaseQuantity(item.product.id) },
+                            onDec = { onDecreaseQuantity(item.product.id) },
+                            onRemove = { onRemoveItem(item.product.id) }
                         )
                     }
                 }
-                SummaryBar(total = s.total)
+                SummaryBar(total = cartUiState.total)
             }
         }
     }
@@ -89,39 +107,81 @@ private fun CartRow(
     onDec: () -> Unit,
     onRemove: () -> Unit
 ) {
-    Card(Modifier.padding(8.dp)) {
+    Card(Modifier.padding(horizontal = 8.dp, vertical = 6.dp)) {
         Row(
-            Modifier
+            modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             AsyncImage(
                 model = image,
                 contentDescription = title,
                 modifier = Modifier
-                    .height(64.dp)
-                    .padding(end = 8.dp),
+                    .size(72.dp)
+                    .clip(shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)),
                 contentScale = ContentScale.Crop
             )
-            Column(Modifier.weight(1f)) {
+
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
                 Text(
-                    title,
+                    text = title,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                     style = MaterialTheme.typography.titleSmall
                 )
-                Text("₺" + "%.2f".format(price), style = MaterialTheme.typography.bodyMedium)
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    text = "₺" + "%.2f".format(price),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.primary
+                )
             }
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                IconButton(onClick = onDec) { Icon(Icons.Filled.Remove, contentDescription = "Azalt") }
-                Text(qty.toString(), modifier = Modifier.padding(horizontal = 8.dp), textAlign = TextAlign.Center)
-                IconButton(onClick = onInc) { Icon(Icons.Filled.Add, contentDescription = "Arttır") }
-                IconButton(onClick = onRemove) { Icon(Icons.Filled.Delete, contentDescription = "Kaldır") }
-            }
+
+            QtyStepper(
+                qty = qty,
+                onDec = onDec,
+                onInc = onInc,
+                onRemove = onRemove
+            )
         }
     }
 }
+
+@Composable
+private fun QtyStepper(
+    qty: Int,
+    onDec: () -> Unit,
+    onInc: () -> Unit,
+    onRemove: () -> Unit
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(2.dp)
+    ) {
+        IconButton(onClick = onDec) {
+            Icon(Icons.Filled.Remove, contentDescription = "Azalt")
+        }
+        Text(
+            text = qty.toString(),
+            modifier = Modifier
+                .width(28.dp)
+                .padding(horizontal = 2.dp),
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.titleSmall
+        )
+        IconButton(onClick = onInc) {
+            Icon(Icons.Filled.Add, contentDescription = "Arttır")
+        }
+        IconButton(onClick = onRemove) {
+            Icon(Icons.Filled.Delete, contentDescription = "Kaldır")
+        }
+    }
+}
+
 
 @Composable
 private fun SummaryBar(total: Double) {
@@ -159,65 +219,34 @@ private fun ErrorState(message: String) {
 }
 
 
-// Preview
-
-private data class PreviewCartItem(
-    val title: String,
-    val price: Double,
-    val image: String,
-    val quantity: Int
-)
-
-private class PreviewCartItemsProvider : PreviewParameterProvider<List<PreviewCartItem>> {
-    override val values: Sequence<List<PreviewCartItem>> = sequenceOf(
-        listOf(
-            PreviewCartItem(
-                title = "Wireless Headphones Max Ultra Bass Edition With Very Long Name",
-                price = 3299.90,
-                image = "https://picsum.photos/seed/phones/300/200",
-                quantity = 1
-            ),
-            PreviewCartItem(
-                title = "Smart Watch Series 9 Mini",
-                price = 4999.00,
-                image = "https://picsum.photos/seed/watch/300/200",
-                quantity = 2
-            ),
-            PreviewCartItem(
-                title = "USB-C Fast Charger 30W",
-                price = 749.50,
-                image = "https://picsum.photos/seed/charger/300/200",
-                quantity = 1
-            )
-        )
-    )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Preview(name = "CartScreen – Filled (Mock)", showBackground = true, widthDp = 411, heightDp = 800)
+@Preview(showBackground = true, name = "Filled cart")
 @Composable
-private fun PreviewCartScreenFilled(
-    @PreviewParameter(PreviewCartItemsProvider::class) items: List<PreviewCartItem>
-) {
-    Column(Modifier.fillMaxSize()) {
-        TopAppBar(title = { Text("Sepet") })
-        LazyColumn(
-            modifier = Modifier.weight(1f),
-            contentPadding = PaddingValues(8.dp)
-        ) {
-            items(items) { item ->
-                CartRow(
-                    title = item.title,
-                    price = item.price,
-                    image = item.image,
-                    qty = item.quantity,
-                    onInc = {},
-                    onDec = {},
-                    onRemove = {}
-                )
-            }
-        }
-        val total = items.sumOf { it.price * it.quantity }
-        SummaryBar(total = total)
+private fun CartScreenContentPreview_Filled() {
+    val dummyProducts = listOf(
+        Product(1, "T-Shirt", 149.99, "Pamuklu", "men clothing", "", Product.Rating(4.2, 34)),
+        Product(2, "Sneakers", 799.0, "Spor", "men shoes", "", Product.Rating(4.4, 18)),
+        Product(3, "Elbise", 499.0, "Kadın", "women clothing", "", Product.Rating(4.1, 12)),
+    )
+    val demoItems = dummyProducts.map {
+        CartUiState.Item(
+            product = it,
+            quantity = (1..3).random()
+        )
+    }
+
+    val demoState = CartUiState(
+        loading = false,
+        error = null,
+        items = demoItems,
+        total = demoItems.sumOf { it.product.price * it.quantity }
+    )
+
+    MaterialTheme {
+        CartScreenContent(
+            cartUiState = demoState,
+            onIncreaseQuantity = {},
+            onDecreaseQuantity = {},
+            onRemoveItem = {}
+        )
     }
 }

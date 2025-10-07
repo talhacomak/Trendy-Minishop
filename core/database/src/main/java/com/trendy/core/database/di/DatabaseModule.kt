@@ -1,4 +1,3 @@
-// path: core/database/src/main/java/com/trendy/core/database/di/DatabaseModule.kt
 package com.trendy.core.database.di
 
 import android.content.Context

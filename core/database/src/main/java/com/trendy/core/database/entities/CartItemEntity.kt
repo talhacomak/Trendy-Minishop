@@ -1,4 +1,3 @@
-// path: core/database/src/main/java/com/trendy/core/database/entities/CartItemEntity.kt
 package com.trendy.core.database.entities
 
 import androidx.room.Entity

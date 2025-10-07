@@ -1,6 +1,6 @@
-// path: feature/home/src/main/java/com/trendy/feature/home/HomeViewModel.kt
 package com.trendy.feature.home
 
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -26,6 +26,9 @@ class HomeViewModel @Inject constructor(
 ) : ViewModel() {
 
     var homeUiState = mutableStateOf(HomeUiState())
+        private set
+
+    var cartCount = mutableIntStateOf(0)
         private set
 
     private var loadJob: Job? = null
@@ -70,7 +73,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun onAddToCart(productId: Int) {
-        // Basit kullanım: mevcut qty bilinmiyor → delta=1, currentQty=0
+        // Basic usage: current quantity unknown → delta=1, currentQty=0
         viewModelScope.launch { addToCart(productId, delta = 1, currentQty = 0) }
     }
 
@@ -79,7 +82,7 @@ class HomeViewModel @Inject constructor(
         favsJob = viewModelScope.launch {
             observeFavorites()
                 .onEach { ids -> homeUiState.value = homeUiState.value.copy(favoriteIds = ids) }
-                .catch { /* favoriler akışı UI’ı düşürmesin */ }
+                .catch { /* t -> homeUiState.value = homeUiState.value.copy(error = t) */ }
                 .collect { /* no-op */ }
         }
     }

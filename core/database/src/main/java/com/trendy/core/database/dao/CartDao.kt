@@ -1,4 +1,3 @@
-// path: core/database/src/main/java/com/trendy/core/database/dao/CartDao.kt
 package com.trendy.core.database.dao
 
 import androidx.room.Dao
