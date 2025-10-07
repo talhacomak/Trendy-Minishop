@@ -28,7 +28,7 @@ include(
     ":core:database",
     ":domain",
     ":data:product",
-    ":data:local",
+    ":data:impl",
     ":feature:home",
     ":feature:favorites",
     ":feature:cart",

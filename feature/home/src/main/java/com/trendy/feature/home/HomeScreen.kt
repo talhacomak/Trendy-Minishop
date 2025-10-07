@@ -119,8 +119,7 @@ fun HomeScreenContent(
                                     scope.launch { snackbarHostState.showSnackbar("Sepete eklendi: ${p.title}") }
                                     lastDroppedId = p.id
                                 }
-                            },
-                            isDropping = { id -> id == lastDroppedId }
+                            }
                         )
                     }
                 }
@@ -128,6 +127,7 @@ fun HomeScreenContent(
 
             CartDropArea(
                 visible = dragState.isDragging,
+                addingToCart = dragState.isAddingToCart,
                 currentPointerInRoot = dragState.pointerInRoot,
                 controller = cartCtrl,
                 modifier = Modifier.align(Alignment.BottomCenter)

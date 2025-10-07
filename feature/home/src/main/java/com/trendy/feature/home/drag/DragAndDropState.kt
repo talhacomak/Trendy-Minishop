@@ -6,6 +6,7 @@ import com.trendy.domain.model.Product
 
 class DragAndDropState {
     var isDragging by mutableStateOf(false)
+    var isAddingToCart by mutableStateOf(false)
     var draggedProduct: Product? by mutableStateOf(null)
     var pointerInRoot by mutableStateOf(Offset.Zero)
 }

@@ -38,6 +38,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.trendy.domain.model.Product
 
@@ -45,7 +46,7 @@ import com.trendy.domain.model.Product
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CartScreen(
-    vm: CartViewModel = androidx.hilt.navigation.compose.hiltViewModel() // DİKKAT: doğru import
+    vm: CartViewModel = hiltViewModel()
 ) {
     val uiState by vm.cartUiState
     CartScreenContent(
@@ -212,7 +213,7 @@ private fun ErrorState(message: String) {
     Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
         Text(message)
         Spacer(Modifier.height(8.dp))
-        Button(onClick = { /* No-op: ViewModel’de ayrı retry ihtiyacı yok */ }) {
+        Button(onClick = { }) {
             Text("Yenile")
         }
     }

@@ -19,8 +19,7 @@ fun ProductGrid(
     cartCtrl: CartDropController,
     onDragStartHaptic: () -> Unit,
     onToggleFavorite: (Int) -> Unit,
-    onAddToCart: (Product) -> Unit,
-    isDropping: (Int) -> Boolean
+    onAddToCart: (Product) -> Unit
 ) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(160.dp),
@@ -32,7 +31,6 @@ fun ProductGrid(
                 dragState = dragState,
                 cartCtrl = cartCtrl,
                 onDragStart = onDragStartHaptic,
-                isDropping = isDropping(p.id),
                 minScaleAtTarget = 0.88f,
                 shouldReturnToOrigin = true,
                 onDropAccepted = { accepted ->
@@ -81,7 +79,6 @@ fun ProductGridPreview() {
         cartCtrl = CartDropController(5f, 5f),
         onDragStartHaptic = {},
         onToggleFavorite = {},
-        onAddToCart = {},
-        isDropping = { false }
+        onAddToCart = {}
     )
 }

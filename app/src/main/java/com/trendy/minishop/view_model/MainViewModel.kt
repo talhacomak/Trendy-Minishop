@@ -1,4 +1,4 @@
-package com.trendy.minishop.navigation
+package com.trendy.minishop.view_model
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -20,7 +20,7 @@ class MainViewModel @Inject constructor(
         observeCartCount()
             .stateIn(
                 scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5_000),
+                started = SharingStarted.Companion.WhileSubscribed(5_000),
                 initialValue = 0
             )
 
@@ -28,7 +28,7 @@ class MainViewModel @Inject constructor(
         observeFavoriteCount()
             .stateIn(
                 scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5_000),
+                started = SharingStarted.Companion.WhileSubscribed(5_000),
                 initialValue = 0
             )
 }

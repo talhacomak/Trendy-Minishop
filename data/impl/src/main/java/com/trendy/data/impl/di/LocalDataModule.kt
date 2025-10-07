@@ -1,7 +1,7 @@
-package com.trendy.data.local.di
+package com.trendy.data.impl.di
 
-import com.trendy.data.local.repo.CartRepositoryImpl
-import com.trendy.data.local.repo.FavoriteRepositoryImpl
+import com.trendy.data.impl.repo.CartRepositoryImpl
+import com.trendy.data.impl.repo.FavoriteRepositoryImpl
 import com.trendy.domain.repository.CartRepository
 import com.trendy.domain.repository.FavoriteRepository
 import dagger.Binds
@@ -12,7 +12,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class LocalDataModule {
+abstract class DataModule {
 
     @Binds
     @Singleton

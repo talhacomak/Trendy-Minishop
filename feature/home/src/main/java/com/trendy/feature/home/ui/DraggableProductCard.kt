@@ -40,10 +40,8 @@ fun DraggableProductCard(
     dragState: DragAndDropState,
     cartCtrl: CartDropController,
     onDragStart: (() -> Unit)? = null,
-    isDropping: Boolean = false,
     minScaleAtTarget: Float = 0.88f,
     shouldReturnToOrigin: Boolean = true,
-    // Animasyon BITTİKTEN sonra, kart sepet merkezine emilip küçüldüğünde çağrılır
     onDropAccepted: (Product) -> Unit = {},
     content: @Composable () -> Unit
 ) {
@@ -170,6 +168,7 @@ fun DraggableProductCard(
 
                         if (halfOrMoreInside) {
                             // Sepetin merkezine doğru "emilme" animasyonu
+                            dragState.isAddingToCart = true
                             val cardCenter = rect.center
                             val targetCenter = cartCtrl.targetCenter
                             val delta = targetCenter - cardCenter
@@ -200,6 +199,7 @@ fun DraggableProductCard(
 
                             scope.launch {
                                 jobs.joinAll() // tüm animasyonlar bitsin
+                                dragState.isAddingToCart = false
                                 // ✅ Animasyon bittikten sonra ViewModel'e ekleme bilgisini ver
                                 onDropAccepted(product)
                                 // Kart görünümü tekrar normal hâldeyken orijine dönsün (UI toparlama)
@@ -214,7 +214,7 @@ fun DraggableProductCard(
                                 }
                             }
                         } else {
-                            // Eski davranış: orijine dön
+                            dragState.isAddingToCart = false
                             val backSpec = spring<Float>(dampingRatio = 0.85f, stiffness = 600f)
                             scope.launch { animX.snapTo(tx); animX.animateTo(0f, backSpec) }
                             scope.launch { animY.snapTo(ty); animY.animateTo(0f, backSpec) }
@@ -232,6 +232,7 @@ fun DraggableProductCard(
                     onDragCancel = {
                         isDragging = false
                         dragState.isDragging = false
+                        dragState.isAddingToCart = false
 
                         val backSpec = spring<Float>(dampingRatio = 0.85f, stiffness = 600f)
                         scope.launch { animX.snapTo(dragDx); animX.animateTo(0f, backSpec) }

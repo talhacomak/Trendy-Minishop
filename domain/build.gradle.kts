@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
+    id("java-test-fixtures")
 }
 
 android {
@@ -24,4 +25,7 @@ dependencies {
     implementation(project(":core:common"))
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
+
+    testFixturesImplementation(libs.truth)
+    testFixturesImplementation(libs.mockito.kotlin)
 }

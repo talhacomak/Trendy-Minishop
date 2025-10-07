@@ -15,7 +15,10 @@ import com.trendy.feature.cart.CartScreen
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.trendy.minishop.view_model.MainViewModel
 
 @Composable
 fun RootNav(
@@ -44,7 +47,7 @@ fun RootNav(
     NavHost(
       navController = navController,
       startDestination = Destinations.Home.route,
-      modifier = androidx.compose.ui.Modifier.padding(padding)
+      modifier = Modifier.padding(bottom = padding.calculateBottomPadding())
     ) {
       composable(Destinations.Home.route) {
         HomeScreen(onOpenCart = { navController.navigate(Destinations.Cart.route) })
@@ -63,9 +66,9 @@ fun RootNav(
 @Composable
 private fun ProfilePlaceholder() {
   androidx.compose.foundation.layout.Box(
-    modifier = androidx.compose.ui.Modifier
+    modifier = Modifier
       .fillMaxSize(),
-    contentAlignment = androidx.compose.ui.Alignment.Center
+    contentAlignment = Alignment.Center
   ) {
     Text("Profil (yakında)")
   }

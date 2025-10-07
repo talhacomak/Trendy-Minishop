@@ -1,4 +1,4 @@
-package com.trendy.data.local.repo
+package com.trendy.data.impl.repo
 
 import com.trendy.core.database.dao.FavoriteDao
 import com.trendy.core.database.entities.FavoriteEntity

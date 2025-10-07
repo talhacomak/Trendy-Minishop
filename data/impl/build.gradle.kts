@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.trendy.data.local"
+    namespace = "com.trendy.data.impl"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {

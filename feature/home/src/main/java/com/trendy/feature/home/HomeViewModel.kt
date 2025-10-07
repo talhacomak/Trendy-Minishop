@@ -1,6 +1,5 @@
 package com.trendy.feature.home
 
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -26,9 +25,6 @@ class HomeViewModel @Inject constructor(
 ) : ViewModel() {
 
     var homeUiState = mutableStateOf(HomeUiState())
-        private set
-
-    var cartCount = mutableIntStateOf(0)
         private set
 
     private var loadJob: Job? = null

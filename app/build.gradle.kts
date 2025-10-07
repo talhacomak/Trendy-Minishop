@@ -24,6 +24,8 @@ android {
         buildConfig = true
     }
 
+    testOptions { unitTests.isIncludeAndroidResources = true }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -52,7 +54,7 @@ dependencies {
     implementation(project(":core:database"))
     implementation(project(":domain"))
     implementation(project(":data:product"))
-    implementation(project(":data:local"))
+    implementation(project(":data:impl"))
     implementation(project(":feature:home"))
     implementation(project(":feature:favorites"))
     implementation(project(":feature:cart"))
@@ -78,6 +80,16 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+
+    testImplementation(libs.truth)
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.inline)
+    testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.coroutines.test)
+    testImplementation(libs.turbine)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.mockwebserver)
+
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 }

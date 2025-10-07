@@ -11,11 +11,11 @@ import kotlin.math.max
 import kotlin.math.min
 
 /**
- * Drag hedefi olan "sepet" alanını temsil eder.
- * - targetRect: root koordinatlarında hedef alan
- * - pointer: anlık pointer
- * - Proximity: 0 (çok uzak) .. 1 (hedef merkezine yakın/üstünde)
- * - Overlap: verilen kart rect'i ile hedefin örtüşme oranı (0..1)
+ * Represents the drop target area ("cart").
+ * - targetRect: target area in root coordinates
+ * - pointer: current pointer position
+ * - Proximity: 0 (far) .. 1 (close to/over target center)
+ * - Overlap: overlap ratio between the given card rect and the target rect (0..1)
  */
 class CartDropController(
     private val minProximityRadiusPx: Float = 48f,
@@ -49,8 +49,8 @@ class CartDropController(
         )
 
     /**
-     * 0 (uzak) .. 1 (merkezde/üstünde) yakınlık.
-     * Eşikler: minProximityRadiusPx (tam yakın) ve maxProximityRadiusPx (tam uzak).
+     * Proximity to the target center: 0 (far) .. 1 (at/over center).
+     * Thresholds: minProximityRadiusPx = fully close, maxProximityRadiusPx = fully far.
      */
     fun proximityToCenter(point: Offset): Float {
         if (targetSize.isEmpty()) return 0f
@@ -60,7 +60,8 @@ class CartDropController(
     }
 
     /**
-     * Kart rect'i ile hedef (sepet) rect'inin örtüşme oranı: overlapArea / cardArea (0..1)
+     * Calculates the overlap ratio between the card rect and the target (cart) rect:
+     * overlapArea / cardArea (0..1)
      */
     fun overlapRatioOf(cardRect: Rect): Float {
         if (targetSize.isEmpty()) return 0f
@@ -78,7 +79,7 @@ class CartDropController(
     }
 
     /**
-     * Eski kullanım için: pointer hedef içinde mi?
+     * Checks if the given point is inside the target area.
      */
     fun shouldAccept(pointInRoot: Offset): Boolean {
         return targetRect.contains(pointInRoot)
