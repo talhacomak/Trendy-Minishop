@@ -1,0 +1,187 @@
+Trendy-Minishop
+├── .kotlin
+│   └── sessions
+├── app
+│   ├── src
+│   │   ├── androidTest
+│   │   │   └── java
+│   │   │       └── com
+│   │   │           └── trendy
+│   │   │               └── minishop
+│   │   │                   └── ExampleInstrumentedTest.kt
+│   │   ├── main
+│   │   │   ├── java
+│   │   │   │   └── com
+│   │   │   │       └── trendy
+│   │   │   │           └── minishop
+│   │   │   │               ├── navigation
+│   │   │   │               │   ├── BottomBar.kt
+│   │   │   │               │   ├── Destinations.kt
+│   │   │   │               │   ├── MainViewModel.kt
+│   │   │   │               │   └── RootNav.kt
+│   │   │   │               ├── ui
+│   │   │   │               │   └── theme
+│   │   │   │               ├── App.kt
+│   │   │   │               └── MainActivity.kt
+│   │   │   ├── res
+│   │   │   │   ├── drawable
+│   │   │   │   │   ├── ic_launcher_background.xml
+│   │   │   │   │   └── ic_launcher_foreground.xml
+│   │   │   │   ├── mipmap-anydpi
+│   │   │   │   │   ├── ic_launcher.xml
+│   │   │   │   │   └── ic_launcher_round.xml
+│   │   │   │   ├── mipmap-hdpi
+│   │   │   │   │   ├── ic_launcher.webp
+│   │   │   │   │   └── ic_launcher_round.webp
+│   │   │   │   ├── mipmap-mdpi
+│   │   │   │   │   ├── ic_launcher.webp
+│   │   │   │   │   └── ic_launcher_round.webp
+│   │   │   │   ├── mipmap-xhdpi
+│   │   │   │   │   ├── ic_launcher.webp
+│   │   │   │   │   └── ic_launcher_round.webp
+│   │   │   │   ├── mipmap-xxhdpi
+│   │   │   │   │   ├── ic_launcher.webp
+│   │   │   │   │   └── ic_launcher_round.webp
+│   │   │   │   ├── mipmap-xxxhdpi
+│   │   │   │   │   ├── ic_launcher.webp
+│   │   │   │   │   └── ic_launcher_round.webp
+│   │   │   │   ├── values
+│   │   │   │   │   ├── colors.xml
+│   │   │   │   │   ├── strings.xml
+│   │   │   │   │   └── themes.xml
+│   │   │   │   └── xml
+│   │   │   │       ├── backup_rules.xml
+│   │   │   │       └── data_extraction_rules.xml
+│   │   │   └── AndroidManifest.xml
+│   │   └── test
+│   │       └── java
+│   │           └── com
+│   │               └── trendy
+│   │                   └── minishop
+│   │                       └── ExampleUnitTest.kt
+│   ├── .gitignore
+│   ├── build.gradle.kts
+│   └── proguard-rules.pro
+├── core
+│   ├── common
+│   │   ├── src
+│   │   │   └── main
+│   │   │       └── java
+│   │   │           └── com
+│   │   │               └── trendy
+│   │   │                   └── core
+│   │   │                       └── common
+│   │   └── build.gradle.kts
+│   ├── database
+│   │   ├── src
+│   │   │   └── main
+│   │   │       └── java
+│   │   │           └── com
+│   │   │               └── trendy
+│   │   │                   └── core
+│   │   │                       └── database
+│   │   └── build.gradle.kts
+│   ├── network
+│   │   ├── src
+│   │   │   └── main
+│   │   │       └── java
+│   │   │           └── com
+│   │   │               └── trendy
+│   │   │                   └── core
+│   │   │                       └── network
+│   │   └── build.gradle.kts
+│   └── ui
+│       └── build.gradle.kts
+├── data
+│   ├── local
+│   │   ├── src
+│   │   │   └── main
+│   │   │       └── java
+│   │   │           └── com
+│   │   │               └── trendy
+│   │   │                   └── data
+│   │   │                       └── local
+│   │   └── build.gradle.kts
+│   └── product
+│       ├── src
+│       │   └── main
+│       │       └── java
+│       │           └── com
+│       │               └── trendy
+│       │                   └── data
+│       │                       └── product
+│       └── build.gradle.kts
+├── domain
+│   ├── src
+│   │   └── main
+│   │       └── java
+│   │           └── com
+│   │               └── trendy
+│   │                   └── domain
+│   │                       ├── model
+│   │                       │   ├── CartItem.kt
+│   │                       │   ├── Category.kt
+│   │                       │   └── Product.kt
+│   │                       ├── repository
+│   │                       │   ├── CartRepository.kt
+│   │                       │   ├── FavoriteRepository.kt
+│   │                       │   └── ProductRepository.kt
+│   │                       └── usecase
+│   │                           ├── AddToCartUseCase.kt
+│   │                           ├── GetCategoriesUseCase.kt
+│   │                           ├── GetProductDetailUseCase.kt
+│   │                           ├── GetProductsUseCase.kt
+│   │                           ├── ObserveCartCountUseCase.kt
+│   │                           ├── ObserveCartUseCase.kt
+│   │                           ├── ObserveFavoriteCountUseCase.kt
+│   │                           ├── ObserveFavoritesUseCase.kt
+│   │                           ├── RemoveFromCartUseCase.kt
+│   │                           ├── ToggleFavoriteUseCase.kt
+│   │                           └── UpdateCartQuantityUseCase.kt
+│   └── build.gradle.kts
+├── feature
+│   ├── cart
+│   │   ├── src
+│   │   │   └── main
+│   │   │       └── java
+│   │   │           └── com
+│   │   │               └── trendy
+│   │   │                   └── feature
+│   │   │                       └── cart
+│   │   └── build.gradle.kts
+│   ├── favorites
+│   │   ├── src
+│   │   │   └── main
+│   │   │       └── java
+│   │   │           └── com
+│   │   │               └── trendy
+│   │   │                   └── feature
+│   │   │                       └── favorites
+│   │   └── build.gradle.kts
+│   ├── home
+│   │   ├── src
+│   │   │   └── main
+│   │   │       ├── java
+│   │   │       │   └── com
+│   │   │       │       └── trendy
+│   │   │       │           └── feature
+│   │   │       │               └── home
+│   │   │       └── res
+│   │   │           └── drawable
+│   │   │               └── cart.png
+│   │   └── build.gradle.kts
+│   └── profile
+│       └── build.gradle.kts
+├── gradle
+│   ├── wrapper
+│   │   ├── gradle-wrapper.jar
+│   │   └── gradle-wrapper.properties
+│   └── libs.versions.toml
+├── .gitignore
+├── build.gradle.kts
+├── gradle.properties
+├── gradlew
+├── gradlew.bat
+├── local.properties
+├── settings.gradle.kts
+└── tree_script.py
